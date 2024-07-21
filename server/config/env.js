@@ -2,8 +2,8 @@ const dotenv = require("dotenv");
 const path = require("path");
 
 const loadEnv = () => {
-  // let NODE_ENV = 'production'
-  let NODE_ENV = ''
+  let NODE_ENV = 'production'
+  // let NODE_ENV = ''
 
   let envFile;
 
