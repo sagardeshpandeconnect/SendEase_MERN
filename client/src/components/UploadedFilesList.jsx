@@ -55,13 +55,14 @@ const UploadedFilesList = ({
                   />
                 </GridItem>
               ))
-          : currentFiles.map((file) => (
+          : currentFiles.map((file, index) => (
               <GridItem key={file._id}>
                 <FileItem
                   file={file}
                   shareableUrl={shareableUrl}
                   copyToClipboard={copyToClipboard}
                   handleDelete={handleDelete}
+                  fileNo={index + 1}
                 />
               </GridItem>
             ))}

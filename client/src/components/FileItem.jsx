@@ -4,7 +4,13 @@ import { DeleteIcon, DownloadIcon, CopyIcon } from "@chakra-ui/icons";
 import convertToIST from "../utils/convertToIST";
 import formatFileSize from "../utils/formatFileSize";
 
-const FileItem = ({ file, shareableUrl, copyToClipboard, handleDelete }) => {
+const FileItem = ({
+  file,
+  shareableUrl,
+  copyToClipboard,
+  handleDelete,
+  fileNo,
+}) => {
   const [copyButtonText, setCopyButtonText] = useState(
     <Button
       leftIcon={<CopyIcon />}
@@ -46,7 +52,14 @@ const FileItem = ({ file, shareableUrl, copyToClipboard, handleDelete }) => {
       borderColor={"GrayText"}
       display={{ sm: "block", lg: "flex" }}
       gap={8}
+      alignItems={"center"}
     >
+      <Text>
+        <Text as="span" fontWeight="semibold">
+          File Number
+        </Text>
+        {` : ${fileNo}`}
+      </Text>
       <Box>
         <Text>
           <Text as="span" fontWeight="semibold">
@@ -68,9 +81,7 @@ const FileItem = ({ file, shareableUrl, copyToClipboard, handleDelete }) => {
             {` : ${formatFileSize(file.size)}`}
           </Text>
         </Box>
-        <Box>
-          <Divider orientation="vertical" />
-        </Box>
+
         <Text>
           <Text as="span" fontWeight="semibold">
             Shareble Link
