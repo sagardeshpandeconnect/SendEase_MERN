@@ -29,7 +29,7 @@ const uploadFile = async (req, res) => {
     });
 
     await newFile.save();
-    res.status(200).send({ message: `File uploaded successfully with ID: ${newFile._id}`, downloadLink: `http://localhost:3001/api/files/download/${newFile._id}`, shareableLink: `http://localhost:3001/api/files/share/${token}` });
+    res.status(200).send({ message: `File uploaded successfully with ID: ${newFile._id}`, downloadLink: `http://localhost:3001/gggg/files/download/${newFile._id}`, shareableLink: `http://localhost:3001/gggg/files/share/${token}` });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
