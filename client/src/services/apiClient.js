@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_APP_API_URL // Replace with your actual backend URL
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // Replace with your actual backend URL
 
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
@@ -18,7 +18,7 @@ export const fetchFiles = async () => {
   }
 };
 
-export const uploadFile = async (file) => {
+export const uploadFile = async (file, onProgress) => {
   const formData = new FormData();
   formData.append("file", file);
 
@@ -26,6 +26,15 @@ export const uploadFile = async (file) => {
     const response = await axiosInstance.post("/files/upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress: (progressEvent) => {
+        console.log(progressEvent.loaded, progressEvent.total);
+        if (onProgress) {
+          const percentageCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          onProgress(percentageCompleted);
+        }
       },
     });
     return response.data;
@@ -39,7 +48,6 @@ export const deleteFile = async (id) => {
   try {
     const response = await axiosInstance.delete(`/files/delete/${id}`);
     return response.data;
-    console.log(response.data)
   } catch (error) {
     console.error("Error deleting file:", error);
     throw error;

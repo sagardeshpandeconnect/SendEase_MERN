@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { fetchFiles, uploadFile, deleteFile, shareableUrl } from "../services/apiClient";
+import {
+  fetchFiles,
+  uploadFile,
+  deleteFile,
+  shareableUrl,
+} from "../services/apiClient";
 import formatFileSize from "../utils/formatFileSize";
 
 const useFileHandling = () => {
   const [files, setFiles] = useState([]);
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -14,7 +20,7 @@ const useFileHandling = () => {
     try {
       const fetchedFiles = await fetchFiles();
       const sortedFiles = fetchedFiles.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt) // Ensure createdAt is the field used for sorting
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       setFiles(sortedFiles);
     } catch (error) {
@@ -28,7 +34,7 @@ const useFileHandling = () => {
 
   // Memoize sorted files array
   const sortedFiles = useMemo(() => {
-    return files.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Ensure createdAt is the field used for sorting
+    return files.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [files]);
 
   // Handle file change
@@ -36,69 +42,76 @@ const useFileHandling = () => {
     setFile(e.target.files[0]);
   }, []);
 
-  // Handle file upload
-  const handleUpload = useCallback(async (e) => {
-    e.preventDefault();
-    if (!file) {
-      alert("Please select a file first!");
-      return;
-    }
-    
-      // Validate file type client-side before uploading
+  // Handle file upload with progress tracking
+  const handleUpload = useCallback(
+    async (e) => {
+      e.preventDefault();
+      if (!file) {
+        alert("Please select a file first!");
+        return;
+      }
+
       const allowedTypes = [
         "image/jpeg",
         "image/png",
         "application/pdf",
-        "application/msword", // MS Word documents
-        "application/vnd.ms-excel", // Excel documents
-        "application/zip", // ZIP archives
-        "application/dwg", // AutoCAD DWG files
-        "application/dxf", // AutoCAD DXF files
-        "video/mp4", // MP4 videos
-        "video/x-msvideo", // AVI videos
-        "video/quicktime", // MOV videos
-        "video/x-ms-wmv", // WMV videos
-        "text/plain" // Text documents
-
-    ];
-        if (!allowedTypes.includes(file.type)) {
+        "application/msword",
+        "application/vnd.ms-excel",
+        "application/zip",
+        "application/dwg",
+        "application/dxf",
+        "video/mp4",
+        "video/x-msvideo",
+        "video/quicktime",
+        "video/x-ms-wmv",
+        "text/plain",
+      ];
+      if (!allowedTypes.includes(file.type)) {
         alert("File type not allowed.");
         return;
-      }  
-
-    try {
-      setUploading(true);
-      await uploadFile(file);
-      setUploading(false);
-      setFile(null);
-      fetchFilesFromAPI();
-
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
       }
-    } catch (error) {
-      setUploading(false);
-      console.error("Error uploading file:", error);
-      alert("Error uploading file");
-    }
-  }, [file, fetchFilesFromAPI]);
+
+      setProgress(0);
+      try {
+        setUploading(true);
+        const onProgress = (percentage) => {
+          setProgress(percentage);
+        };
+        await uploadFile(file, onProgress);
+        setUploading(false);
+        setFile(null);
+        fetchFilesFromAPI();
+
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      } catch (error) {
+        setUploading(false);
+        console.error("Error uploading file:", error);
+        alert("Error uploading file");
+      }
+    },
+    [file, fetchFilesFromAPI]
+  );
 
   // Handle file delete
-  const handleDelete = useCallback(async (id) => {
-    setFiles((files) => files.filter((file) => file._id !== id)); // Ensure _id is used instead of __id
+  const handleDelete = useCallback(
+    async (id) => {
+      setFiles((files) => files.filter((file) => file._id !== id));
 
-    try {
-      setDeleting(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await deleteFile(id);
-      setDeleting(false);
-      fetchFilesFromAPI();
-    } catch (error) {
-      setDeleting(false);
-      console.error("Error deleting file:", error);
-      alert("Error deleting file");
-    }
-  }, [fetchFilesFromAPI]);
+      try {
+        setDeleting(true);
+        await deleteFile(id);
+        setDeleting(false);
+        fetchFilesFromAPI();
+      } catch (error) {
+        setDeleting(false);
+        console.error("Error deleting file:", error);
+        alert("Error deleting file");
+      }
+    },
+    [fetchFilesFromAPI]
+  );
 
   // Format file size memoized
   const formatFileSizeMemoized = useCallback((fileSizeInBytes) => {
@@ -109,6 +122,7 @@ const useFileHandling = () => {
     files: sortedFiles,
     file,
     uploading,
+    progress, // Added progress for tracking
     deleting,
     fileInputRef,
     handleFileChange,

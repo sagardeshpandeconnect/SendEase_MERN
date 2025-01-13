@@ -17,6 +17,7 @@ function App() {
     handleUpload,
     handleDelete,
     shareableUrl,
+    progress,
   } = useFileHandling();
   const { copyButtonText, copyToClipboard } = useClipboard();
 
@@ -38,13 +39,11 @@ function App() {
       />
       <LoadingModal
         isOpen={uploading}
-        message="Uploading file, please wait a moment...
-        Go to page No.1 to access the recently added files"
+        message="File is being uploaded...
+        Go to page No.1 to access the recently added files."
+        progress={progress}
       />
-      <LoadingModal
-        isOpen={deleting}
-        message="Deleting file, please wait a moment..."
-      />
+      <LoadingModal isOpen={deleting} message="File is being deleted..." />
     </Box>
   );
 }

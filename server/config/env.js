@@ -2,18 +2,18 @@ const dotenv = require("dotenv");
 const path = require("path");
 
 const loadEnv = () => {
-  let NODE_ENV = 'production'
-  // let NODE_ENV = ''
+  // let NODE_ENV = "production";
+  let NODE_ENV = "";
 
   let envFile;
 
   switch (NODE_ENV) {
-    case 'production':
+    case "production":
       envFile = ".env.production";
       break;
-      case 'testing':
-        envFile = ".env.testing";
-        break;
+    case "testing":
+      envFile = ".env.testing";
+      break;
     default:
       envFile = ".env.development";
       break;
