@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const multer = require("multer");
-const File = require("../models/File");
+const File = require("../models/file.model");
 const fs = require("fs");
 
 const storage = multer.diskStorage({
@@ -38,8 +38,8 @@ const uploadFile = async (req, res) => {
     await newFile.save();
     res.status(200).send({
       message: `File uploaded successfully with ID: ${newFile._id}`,
-      downloadLink: `http://localhost:3001/gggg/files/download/${newFile._id}`,
-      shareableLink: `http://localhost:3001/gggg/files/share/${token}`,
+      downloadLink: `http://localhost:3001/files/download/${newFile._id}`,
+      shareableLink: `http://localhost:3001/files/share/${token}`,
     });
   } catch (err) {
     console.error(err);
@@ -127,7 +127,8 @@ const shareFile = async (req, res) => {
       `attachment; filename=${file.filename}`
     );
     res.setHeader("Content-Type", file.mimetype);
-    res.send(file.content);
+    const fileStream = fs.createReadStream(file.path); // Read the file from disk
+    fileStream.pipe(res);
   } catch (err) {
     console.error(err);
     res.status(500).send("Server error");

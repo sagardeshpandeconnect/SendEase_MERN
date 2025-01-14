@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Button, Divider, Text } from "@chakra-ui/react";
+import { Box, Button, Text } from "@chakra-ui/react";
 import { DeleteIcon, DownloadIcon, CopyIcon } from "@chakra-ui/icons";
 import convertToIST from "../utils/convertToIST";
 import formatFileSize from "../utils/formatFileSize";
@@ -50,9 +50,10 @@ const FileItem = ({
       borderRadius="lg"
       p={2}
       borderColor={"GrayText"}
-      display={{ sm: "block", lg: "flex" }}
-      gap={8}
-      alignItems={"center"}
+      display="grid"
+      gridTemplateColumns={{ base: "1fr", lg: "1fr 4fr 3fr" }} // Stack on mobile, 1:3:3 on larger screens
+      gap={4}
+      alignItems="center"
     >
       <Text>
         <Text as="span" fontWeight="semibold">
@@ -60,6 +61,7 @@ const FileItem = ({
         </Text>
         {` : ${fileNo}`}
       </Text>
+
       <Box>
         <Text>
           <Text as="span" fontWeight="semibold">
@@ -67,7 +69,7 @@ const FileItem = ({
           </Text>
           {` : ${file.filename}`}
         </Text>
-        <Box display={{ sm: "block", lg: "flex" }} gap={3}>
+        <Box display="flex" gap={3}>
           <Text>
             <Text as="span" fontWeight="semibold">
               Uploaded on
@@ -84,7 +86,7 @@ const FileItem = ({
 
         <Text>
           <Text as="span" fontWeight="semibold">
-            Shareble Link
+            Shareable Link
           </Text>
           <a
             href={shareableUrl(file.token)}
@@ -98,21 +100,23 @@ const FileItem = ({
         </Text>
       </Box>
 
-      <Box display="flex" alignItems="center">
+      <Box
+        display="flex"
+        gap={2}
+        alignItems="center"
+        justifyContent={"space-evenly"}
+      >
         <Button colorScheme="teal" leftIcon={<DownloadIcon />} size="sm">
           <a
-            href={`http://localhost:3001/files/download/${file._id}`}
+            href={`http://localhost:3001/download/${file._id}`}
             target="_blank"
             rel="noopener noreferrer"
           >
             Download
           </a>
         </Button>
-        <Box ml={2} onClick={handleCopyClick}>
-          {copyButtonText}
-        </Box>
+        <Box onClick={handleCopyClick}>{copyButtonText}</Box>
         <Button
-          ml={2}
           colorScheme="red"
           onClick={() => handleDelete(file._id)}
           leftIcon={<DeleteIcon />}

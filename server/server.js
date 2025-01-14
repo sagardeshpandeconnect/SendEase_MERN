@@ -1,30 +1,13 @@
-const loadEnv = require("./config/env");
+const app = require("./app");
+const loadEnvironmentVariables = require("./configs/env.config");
+const connectDB = require("./configs/db.config");
+
 // Load environment variables
-loadEnv();
+loadEnvironmentVariables();
 
-const express = require('express');
-const cors = require('cors');
-const setupMiddlewares = require("./middlewares");
-const fileRoutes = require('./routes/fileRoutes');
-const connectDB = require("./database/connection");
+// Connect to the database
+connectDB();
 
-
-// Create Express app
-const app = express();
-
-// Setup middlewares
-setupMiddlewares(app);
-
-// Enable CORS
-app.use(cors())
-
-// Routes
-app.use('/files', fileRoutes);
-
-// Connect to the database and start the server
+// Start the server
 const PORT = process.env.PORT || 6001;
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`HTTP server started on port: ${PORT}`);
-  });
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

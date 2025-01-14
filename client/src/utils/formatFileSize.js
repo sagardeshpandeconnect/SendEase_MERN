@@ -1,5 +1,3 @@
-// utils/formatFileSize.js
-
 function formatFileSize(fileSizeInBytes) {
   const fileSizeInKB = fileSizeInBytes / 1024;
   if (fileSizeInKB < 1024) {
