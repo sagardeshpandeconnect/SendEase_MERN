@@ -51,6 +51,13 @@ const useFileHandling = () => {
         return;
       }
 
+      // Check file size (300MB = 300 * 1024 * 1024 bytes)
+      const maxFileSize = 300 * 1024 * 1024; // 300MB in bytes
+      if (file.size > maxFileSize) {
+        alert("File size exceeds 300MB. Please select a smaller file.");
+        return;
+      }
+
       const allowedTypes = [
         "image/jpeg",
         "image/png",
