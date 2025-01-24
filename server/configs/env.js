@@ -5,6 +5,11 @@ const loadEnv = () => {
   // let NODE_ENV = "production";
   let NODE_ENV = "";
 
+  if (!NODE_ENV) {
+    console.warn("NODE_ENV is not set. No .env file will be loaded.");
+    return;
+  }
+
   let envFile;
 
   switch (NODE_ENV) {
