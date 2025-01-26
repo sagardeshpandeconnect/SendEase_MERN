@@ -20,6 +20,8 @@ const generateToken = () => {
 
 const uploadFile = async (req, res) => {
   const file = req.file;
+  const BASE_URL = process.env.BASE_URL;
+
   if (!file) {
     return res.status(400).send("No file selected.");
   }
@@ -38,8 +40,8 @@ const uploadFile = async (req, res) => {
     await newFile.save();
     res.status(200).send({
       message: `File uploaded successfully with ID: ${newFile._id}`,
-      downloadLink: `http://localhost:3001/files/download/${newFile._id}`,
-      shareableLink: `http://localhost:3001/files/share/${token}`,
+      downloadLink: `${BASE_URL}/files/download/${newFile._id}`,
+      shareableLink: `${BASE_URL}/files/share/${token}`,
     });
   } catch (err) {
     console.error(err);

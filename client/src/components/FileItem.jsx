@@ -108,7 +108,7 @@ const FileItem = ({
       >
         <Button colorScheme="teal" leftIcon={<DownloadIcon />} size="sm">
           <a
-            href={`http://localhost:3001/download/${file._id}`}
+            href={`${import.meta.env.VITE_APP_API_URL}/download/${file._id}`}
             target="_blank"
             rel="noopener noreferrer"
           >
